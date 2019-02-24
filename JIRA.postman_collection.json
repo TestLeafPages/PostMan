@@ -1,0 +1,290 @@
+{
+	"info": {
+		"_postman_id": "af11b292-546e-4355-8cfe-c0d762af2acb",
+		"name": "JIRA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Issues",
+			"item": [
+				{
+					"name": "Create Issue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3566e8f2-3a7a-42b8-8419-6da1d414ccc5",
+								"exec": [
+									"var json = pm.response.json();",
+									"",
+									"console.log(json);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fields\": {\r\n       \"project\":\r\n       {\r\n          \"key\": \"TUNA\"\r\n       },\r\n       \"summary\": \"New Defect.\",\r\n       \"description\": \"Creating of an issue using project keys and issue type names using the REST API\",\r\n       \"issuetype\": {\r\n          \"name\": \"Bug\"\r\n       }\r\n   }\r\n}"
+						},
+						"url": {
+							"raw": "https://testleaf201902.atlassian.net/rest/api/2/issue/",
+							"protocol": "https",
+							"host": [
+								"testleaf201902",
+								"atlassian",
+								"net"
+							],
+							"path": [
+								"rest",
+								"api",
+								"2",
+								"issue",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Issues Specific to Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "18b5f5e1-2436-4f27-884f-5a54788a68c8",
+								"exec": [
+									"\r",
+									"// Covert to JSON\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"console.log(response.issues);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "leaf201906@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "Leaf@123",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://testleaf201902.atlassian.net/rest/api/2/search?jql=project=\"TUNA\"",
+							"protocol": "https",
+							"host": [
+								"testleaf201902",
+								"atlassian",
+								"net"
+							],
+							"path": [
+								"rest",
+								"api",
+								"2",
+								"search"
+							],
+							"query": [
+								{
+									"key": "jql",
+									"value": "project=\"TUNA\""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete issue",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "0bbf86c7-ae4e-4412-a59f-e9c251064bbb",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "cc4efa9e-5823-4903-8748-0fccae15e20a",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": "\n"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://svcsjan2019.atlassian.net/rest/api/2/issue/10002",
+							"protocol": "https",
+							"host": [
+								"svcsjan2019",
+								"atlassian",
+								"net"
+							],
+							"path": [
+								"rest",
+								"api",
+								"2",
+								"issue",
+								"10002"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Fields",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"fields\": \n\t{\n\t\t\"summary\": \"Updated Defect Information\"\n\t\t\n\t} \n}"
+						},
+						"url": {
+							"raw": "https://testleaf201902.atlassian.net/rest/api/2/issue/10000",
+							"protocol": "https",
+							"host": [
+								"testleaf201902",
+								"atlassian",
+								"net"
+							],
+							"path": [
+								"rest",
+								"api",
+								"2",
+								"issue",
+								"10000"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "da6a3067-da06-494e-8718-e8c8e74da1d1",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "194114cd-ac81-4e09-b858-463bbf409e84",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "Leaf@123",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "leaf201906@gmail.com",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a9549084-cc6a-43f1-b8cb-25e0c416f75d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "11c4e2cd-4d6a-4365-aee9-3d3c4b16cc9f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
