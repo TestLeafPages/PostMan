@@ -1,0 +1,245 @@
+{
+	"info": {
+		"_postman_id": "53b822bc-3c4e-4b82-809e-b25670d145a1",
+		"name": "Chaining",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create a new Incident",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "373ec227-f135-4cb0-9ac9-b99a06ee861b",
+						"exec": [
+							"var json = pm.response.json();",
+							"console.log(json);",
+							"",
+							"console.log(json.result.sys_id);",
+							"pm.globals.set(\"sys_id\", json.result.sys_id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "Tuna@123",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"short_description\" : \"REST Automation using PostMan\",\n\t\"caller_id\": {\n                \"link\": \"https://dev28357.service-now.com/api/now/table/sys_user/681ccaf9c0a8016400b98a06818d57c7\",\n                \"value\": \"681ccaf9c0a8016400b98a06818d57c7\"\n            }\n\t\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}/{{resources}}/table/{{table}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"{{resources}}",
+						"table",
+						"{{table}}"
+					]
+				},
+				"description": "Create a new Incident"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Description",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\"short_description\" : \"Changed by PostMan\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}/{{resources}}/table/{{table}}/{{sys_id}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"{{resources}}",
+						"table",
+						"{{table}}",
+						"{{sys_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Incidents",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "995bf132-45f6-4264-9d87-30e201553e04",
+						"exec": [
+							"var json = pm.response.json();",
+							"console.log(json);",
+							"",
+							"var random = Math.floor(Math.random() * Math.floor(json.result.length));",
+							"console.log(random);",
+							"",
+							"pm.globals.set(\"sys_id\", json.result[random].sys_id);",
+							"",
+							"console.log(pm.response.code);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}/{{resources}}/table/{{table}}?sysparm_fields=number, sys_id,caller_id",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"{{resources}}",
+						"table",
+						"{{table}}"
+					],
+					"query": [
+						{
+							"key": "urgency",
+							"value": "1",
+							"description": "This is define and filter urgency",
+							"disabled": true
+						},
+						{
+							"key": "priority",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "sysparm_fields",
+							"value": "number, sys_id,caller_id"
+						},
+						{
+							"key": "sysparm_fields",
+							"value": "sys_id",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Get all incident details from the end point"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Incidents by Sys-id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}/{{resources}}/table/{{table}}/{{sys_id}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"{{resources}}",
+						"table",
+						"{{table}}",
+						"{{sys_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "Tuna@123",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "admin",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "63c4bfad-7649-43dd-aa1d-c50f41e08854",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9de58f64-c80e-4543-ab73-872f5a1163f5",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "bbb2e7ac-3ed9-4251-b8bf-bae5010feca4",
+			"key": "table",
+			"value": "incident",
+			"type": "string"
+		}
+	]
+}
