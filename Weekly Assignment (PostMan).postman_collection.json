@@ -1,0 +1,421 @@
+{
+	"info": {
+		"_postman_id": "8b318178-943e-44fb-9f93-fee385921780",
+		"name": "Weekly Assignment (PostMan)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Jira",
+			"item": [
+				{
+					"name": "Get Issues Created Within 24 hours",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fc15001f-0ac3-4586-bc29-8ec01e1d114a",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"// Covert to JSON",
+									"var result = pm.response.json();",
+									"",
+									"// Get the length and set as global variable",
+									"var len = result.issues.length;",
+									"console.log(len);",
+									"pm.globals.set(\"issues_count\", len);",
+									"",
+									"var random  =Math.floor(Math.random() * len);",
+									"console.log(\"The random value is \"+random);",
+									"console.log(\"The random issue \"+result.issues[random].id);",
+									"pm.globals.set(\"issue_random\",result.issues[random].id);",
+									"",
+									"// Get todays date in milliseconds",
+									"var today = new Date().getTime();",
+									"",
+									"// Loop through each issue",
+									"for (let i = 0; i < len; i++) {",
+									"    var time = result.issues[i].fields.created; // find the created time of each issue",
+									"    if((today - 86400000) <= new Date(time).getTime()){ // check if the created time is with in 24 hours",
+									"        console.log(\"The issue that has been created with in 24 hours : \"+ result.issues[i].id); // print the issue",
+									"    }",
+									"}",
+									"",
+									"pm.test(\"Response time validation\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{url}}.atlassian.net/rest/api/2/search?jql=project=\"{{project}}\"",
+							"protocol": "https",
+							"host": [
+								"{{url}}",
+								"atlassian",
+								"net"
+							],
+							"path": [
+								"rest",
+								"api",
+								"2",
+								"search"
+							],
+							"query": [
+								{
+									"key": "jql",
+									"value": "project=\"{{project}}\""
+								},
+								{
+									"key": null,
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete issue Randomly",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "0bbf86c7-ae4e-4412-a59f-e9c251064bbb",
+								"exec": [
+									"console.log(\"The issue to be deleted is \"+ pm.globals.get(\"issue_random\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "cc4efa9e-5823-4903-8748-0fccae15e20a",
+								"exec": [
+									"pm.test(\"Status code is 204 after deletion\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": "\n"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{url}}.atlassian.net/rest/api/2/issue/{{issue_random}}",
+							"protocol": "https",
+							"host": [
+								"{{url}}",
+								"atlassian",
+								"net"
+							],
+							"path": [
+								"rest",
+								"api",
+								"2",
+								"issue",
+								"{{issue_random}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify the count reduced",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c6291e10-77c3-4faf-a5a4-2472ac3dfada",
+								"exec": [
+									"var result = pm.response.json();",
+									"",
+									"var currentLength = result.issues.length;",
+									"console.log(\"The current length \"+currentLength);",
+									"",
+									"var previousLength = pm.globals.get(\"issues_count\")",
+									"",
+									"console.log(\"The previous length \"+previousLength);",
+									"",
+									"if(currentLength === previousLength-1){",
+									"    console.log(\"1 record is deleted successfully and verified\");",
+									"}else{",
+									"    console.log(\"There is mismatch in count\")",
+									"}",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{url}}.atlassian.net/rest/api/2/search?jql=project=\"{{project}}\"",
+							"protocol": "https",
+							"host": [
+								"{{url}}",
+								"atlassian",
+								"net"
+							],
+							"path": [
+								"rest",
+								"api",
+								"2",
+								"search"
+							],
+							"query": [
+								{
+									"key": "jql",
+									"value": "project=\"{{project}}\""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Issue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4f460d16-c944-4997-8cdb-05dcd9effdee",
+								"exec": [
+									"var result = pm.response.json();",
+									"pm.globals.set(\"issueid\", result.id);",
+									"console.log(pm.globals.get(\"issueid\"));",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fields\": {\r\n       \"project\":\r\n       {\r\n          \"key\": \"OC\"\r\n       },\r\n       \"summary\": \"New Defect.\",\r\n       \"description\": \"Creating of an issue using project keys and issue type names using the REST API\",\r\n       \"issuetype\": {\r\n          \"name\": \"Bug\"\r\n       }\r\n   }\r\n}"
+						},
+						"url": {
+							"raw": "https://{{url}}.atlassian.net/rest/api/2/issue/",
+							"protocol": "https",
+							"host": [
+								"{{url}}",
+								"atlassian",
+								"net"
+							],
+							"path": [
+								"rest",
+								"api",
+								"2",
+								"issue",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Multiple Attachments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "600db867-386d-4932-b334-5e64a7efcb7c",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "5cf9bf89-63ac-47d1-954d-88b5850c84b0",
+								"exec": [
+									"pm.environment.get(\"issueid\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							},
+							{
+								"key": "X-Atlassian-Token",
+								"value": "no-check"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file\n",
+									"type": "file",
+									"value": ""
+								},
+								{
+									"key": "file\n",
+									"type": "file",
+									"value": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{url}}.atlassian.net/rest/api/2/issue/{{issueid}}/attachments",
+							"protocol": "https",
+							"host": [
+								"{{url}}",
+								"atlassian",
+								"net"
+							],
+							"path": [
+								"rest",
+								"api",
+								"2",
+								"issue",
+								"{{issueid}}",
+								"attachments"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7d7dae8b-14b6-4b3e-8fc6-58eb7a1176b9",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b17d709f-64d4-4c5b-bf9c-f35a9443cd11",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "Tuna@123",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "qeagle1012@gmail.com",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a9549084-cc6a-43f1-b8cb-25e0c416f75d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "11c4e2cd-4d6a-4365-aee9-3d3c4b16cc9f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
